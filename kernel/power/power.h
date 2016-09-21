@@ -5,7 +5,6 @@
 #include <linux/freezer.h>
 #include <linux/compiler.h>
 #include <linux/cpu.h>
-#include <linux/cpuidle.h>
 
 struct swsusp_info {
 	struct new_utsname	uts;
@@ -316,12 +315,10 @@ extern int pm_wake_unlock(const char *buf);
 
 static inline int pm_sleep_disable_secondary_cpus(void)
 {
-	cpuidle_pause();
 	return suspend_disable_secondary_cpus();
 }
 
 static inline void pm_sleep_enable_secondary_cpus(void)
 {
 	suspend_enable_secondary_cpus();
-	cpuidle_resume();
 }
