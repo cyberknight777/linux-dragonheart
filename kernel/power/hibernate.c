@@ -466,8 +466,6 @@ static int resume_target_kernel(bool platform_mode)
 	if (error)
 		goto Cleanup;
 
-	cpuidle_pause();
-
 	error = hibernate_resume_nonboot_cpu_disable();
 	if (error)
 		goto Enable_cpus;
