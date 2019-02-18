@@ -772,6 +772,26 @@ ifdef CONFIG_LTO
 KBUILD_LDFLAGS	+= --lto-O2
 endif
 endif
+ifdef CONFIG_LLVM_POLLY
+POLLY_FLAGS     := -mllvm -polly \
+                   -mllvm -polly-run-dce \
+                   -mllvm -polly-run-inliner \
+                   -mllvm -polly-loopfusion-greedy=1 \
+                   -mllvm -polly-reschedule=1 \
+                   -mllvm -polly-postopts=1 \
+                   -mllvm -polly-num-threads=0 \
+                   -mllvm -polly-omp-backend=LLVM \
+                   -mllvm -polly-scheduling=dynamic \
+                   -mllvm -polly-scheduling-chunksize=1 \
+                   -mllvm -polly-ast-use-context \
+                   -mllvm -polly-detect-keep-going \
+                   -mllvm -polly-vectorizer=stripmine \
+                   -mllvm -polly-invariant-load-hoisting
+
+KBUILD_CFLAGS += $(POLLY_FLAGS)
+KBUILD_AFLAGS += $(POLLY_FLAGS)
+KBUILD_LDFLAGS += $(POLLY_FLAGS)
+endif
 else ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
 KBUILD_AFLAGS	+= -Os
 KBUILD_CFLAGS	+= -Os

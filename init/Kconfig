@@ -109,6 +109,14 @@ config THREAD_INFO_IN_TASK
 	  One subtle change that will be needed is to use try_get_task_stack()
 	  and put_task_stack() in save_thread_stack_tsk() and get_wchan().
 
+config LLVM_POLLY
+	bool "Enable LLVM's polyhedral loop optimizer (Polly)"
+	help
+	  This option enables LLVM's polyhedral loop optimizer known as Polly.
+	  Polly is able to optimize various loops throughout the kernel for
+	  maximum cache locality. This requires an LLVM toolchain explicitly
+	  compiled with Polly support.
+
 menu "General setup"
 
 config ZENIFY
