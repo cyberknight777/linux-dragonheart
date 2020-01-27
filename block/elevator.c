@@ -633,6 +633,9 @@ static inline bool elv_support_iosched(struct request_queue *q)
  */
 static struct elevator_type *elevator_get_default(struct request_queue *q)
 {
+#if defined(CONFIG_IOSCHED_BFQ)
+	return elevator_get(q, "bfq", false);
+#else
 	if (q->tag_set && q->tag_set->flags & BLK_MQ_F_NO_SCHED_BY_DEFAULT)
 		return NULL;
 
@@ -641,6 +644,7 @@ static struct elevator_type *elevator_get_default(struct request_queue *q)
 		return NULL;
 
 	return elevator_get(q, "mq-deadline", false);
+#endif
 }
 
 /*
