@@ -191,7 +191,7 @@ static inline void __mm_zero_struct_page(struct page *page)
  * not a hard limit any more. Although some userspace tools can be surprised by
  * that.
  */
-#define DEFAULT_MAX_MAP_COUNT	(262144)
+#define DEFAULT_MAX_MAP_COUNT	(524288)
 
 extern int sysctl_max_map_count;
 
