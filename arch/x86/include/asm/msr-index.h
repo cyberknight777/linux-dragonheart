@@ -157,6 +157,8 @@
 #define RTM_ALLOW			BIT(1)	/* TSX development mode */
 #define FB_CLEAR_DIS			BIT(3)	/* CPU Fill buffer clear disable */
 
+#define MSR_IA32_OC_MAILBOX		0x00000150
+
 #define MSR_IA32_SYSENTER_CS		0x00000174
 #define MSR_IA32_SYSENTER_ESP		0x00000175
 #define MSR_IA32_SYSENTER_EIP		0x00000176
