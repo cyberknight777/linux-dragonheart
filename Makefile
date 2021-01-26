@@ -755,11 +755,28 @@ KBUILD_CFLAGS	+= $(call cc-disable-warning, format-overflow)
 KBUILD_CFLAGS	+= $(call cc-disable-warning, address-of-packed-member)
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE
-KBUILD_CFLAGS += -O2
+KBUILD_AFLAGS	+= -O2
+KBUILD_CFLAGS	+= -O2
+KBUILD_LDFLAGS	+= -O2
+ifdef CONFIG_CC_IS_CLANG
+ifdef CONFIG_LTO
+KBUILD_LDFLAGS	+= --lto-O2
+endif
+endif
 else ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE_O3
-KBUILD_CFLAGS += -O3
+KBUILD_AFLAGS	+= -O3
+KBUILD_CFLAGS	+= -O3
+KBUILD_LDFLAGS	+= -O3
+ifdef CONFIG_CC_IS_CLANG
+ifdef CONFIG_LTO
+# It isn't possible to currently boot a kernel with --lto-O3.
+KBUILD_LDFLAGS	+= --lto-O2
+endif
+endif
 else ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-KBUILD_CFLAGS += -Os
+KBUILD_AFLAGS	+= -Os
+KBUILD_CFLAGS	+= -Os
+KBUILD_LDFLAGS	+= -Os
 endif
 
 # Tell gcc to never replace conditional load with a non-conditional one
