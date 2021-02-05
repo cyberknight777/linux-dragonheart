@@ -254,6 +254,7 @@ static ssize_t kernfs_fop_read_iter(struct kiocb *iocb, struct iov_iter *iter)
  */
 static ssize_t kernfs_fop_write_iter(struct kiocb *iocb, struct iov_iter *iter)
 {
+	char buf_onstack[SZ_4K + 1] __aligned(sizeof(long));
 	struct kernfs_open_file *of = kernfs_of(iocb->ki_filp);
 	ssize_t len = iov_iter_count(iter);
 	const struct kernfs_ops *ops;
@@ -267,12 +268,17 @@ static ssize_t kernfs_fop_write_iter(struct kiocb *iocb, struct iov_iter *iter)
 	}
 
 	buf = of->prealloc_buf;
-	if (buf)
+	if (buf) {
 		mutex_lock(&of->prealloc_mutex);
-	else
-		buf = kmalloc(len + 1, GFP_KERNEL);
-	if (!buf)
-		return -ENOMEM;
+	} else {
+		if (len < ARRAY_SIZE(buf_onstack)) {
+			buf = buf_onstack;
+		} else {
+			buf = kmalloc(len + 1, GFP_KERNEL);
+			if (!buf)
+				return -ENOMEM;
+		}
+	}
 
 	if (copy_from_iter(buf, len, iter) != len) {
 		len = -EFAULT;
@@ -306,7 +312,7 @@ static ssize_t kernfs_fop_write_iter(struct kiocb *iocb, struct iov_iter *iter)
 out_free:
 	if (buf == of->prealloc_buf)
 		mutex_unlock(&of->prealloc_mutex);
-	else
+	else if (buf != buf_onstack)
 		kfree(buf);
 	return len;
 }
