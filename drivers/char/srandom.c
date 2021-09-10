@@ -47,7 +47,7 @@
  * Dev name as it appears in /proc/devices
  */
 #define sDEVICE_NAME "srandom"
-#define AppVERSION "1.38.0"
+#define AppVERSION "1.39.0"
 /*
  * Amount of time worker thread should sleep between each operation.
  * Recommended prime
@@ -637,4 +637,3 @@ module_exit(mod_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Jonathan Senkerik <josenk@jintegrate.co>");
 MODULE_DESCRIPTION("Improved random number generator.");
-MODULE_SUPPORTED_DEVICE("/dev/srandom");
