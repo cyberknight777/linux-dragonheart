@@ -309,6 +309,12 @@ static void lpi_check_constraints(void)
 			continue;
 		}
 
+		if (!acpi_get_first_physical_node(adev)) {
+			acpi_handle_debug(handle, "LPI: Device is not physically present\n");
+			lpi_constraints_table[i].handle = NULL;
+			continue;
+		}
+
 		if (adev->power.state < lpi_constraints_table[i].min_dstate)
 			acpi_handle_info(handle,
 				"LPI: Constraint not met; min power state:%s current power state:%s\n",
