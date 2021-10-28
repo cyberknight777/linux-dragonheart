@@ -8471,6 +8471,8 @@ static int rtl8152_system_suspend(struct r8152 *tp)
 		napi_enable(napi);
 		tasklet_enable(&tp->tx_tl);
 	}
+	if (!pm_suspend_via_firmware() && tp->rtl_ops.autosuspend_en)
+		tp->rtl_ops.autosuspend_en(tp, false);
 
 	return 0;
 }
