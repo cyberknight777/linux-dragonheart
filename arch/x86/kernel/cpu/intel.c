@@ -1038,7 +1038,7 @@ static bool split_lock_verify_msr(bool on)
 
 static void __init sld_state_setup(void)
 {
-	enum split_lock_detect_state state = sld_warn;
+	enum split_lock_detect_state state = sld_off;
 	char arg[20];
 	int i, ret;
 
