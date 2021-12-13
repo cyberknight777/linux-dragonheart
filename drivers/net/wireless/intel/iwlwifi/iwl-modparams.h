@@ -62,7 +62,7 @@ enum iwl_uapsd_disable {
  * @disable_11ac: disable VHT capabilities, default = false.
  * @remove_when_gone: remove an inaccessible device from the PCIe bus.
  * @enable_ini: enable new FW debug infratructure (INI TLVs)
- * @beacon_timeout: number of missed beacons before disconnect, default = 16
+ * @beacon_timeout: number of missed beacons before disconnect, default = 256
  */
 struct iwl_mod_params {
 	int swcrypto;
