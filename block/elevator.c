@@ -630,19 +630,25 @@ static inline bool elv_support_iosched(struct request_queue *q)
 }
 
 /*
- * For single queue devices, default to using bfq. If we have multiple
- * queues or bfq is not available, default to "none".
+ * Always use bfq as our elevator if possible. If bfq is unavailable default
+ * to mq-deadline for single-queue and none for multi-queue devices.
  */
 static struct elevator_type *elevator_get_default(struct request_queue *q)
 {
 	if (q->tag_set && q->tag_set->flags & BLK_MQ_F_NO_SCHED_BY_DEFAULT)
 		return NULL;
 
+#ifndef CONFIG_IOSCHED_BFQ
 	if (q->nr_hw_queues != 1 &&
 	    !blk_mq_is_shared_tags(q->tag_set->flags))
 		return NULL;
+#endif
 
+#if defined(CONFIG_IOSCHED_BFQ)
 	return elevator_get(q, "bfq", false);
+#else
+	return elevator_get(q, "mq-deadline", false);
+#endif
 }
 
 /*
