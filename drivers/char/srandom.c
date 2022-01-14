@@ -93,12 +93,11 @@ static struct miscdevice srandom_dev = {
 };
 
 
-static const struct file_operations proc_fops = {
-	.owner   = THIS_MODULE,
-	.read	= seq_read,
-	.open	= proc_open,
-	.llseek  = seq_lseek,
-	.release = single_release,
+static const struct proc_ops proc_fops = {
+	.proc_read	= seq_read,
+	.proc_open	= proc_open,
+	.proc_lseek  = seq_lseek,
+	.proc_release = single_release,
 };
 
 static struct mutex UpArr_mutex;
@@ -325,8 +324,6 @@ size_t count, loff_t *ppos)
 			new_buf = kzalloc((count_remaining + 512) *
 				sizeof(uint8_t), GFP_KERNEL);
 			while (!new_buf) {
-				pr_debug("buffered kzalloc failed to allocate buffer.",
-					"retrying...\n");
 				new_buf = kzalloc((count_remaining + 512) *
 					sizeof(uint8_t), GFP_KERNEL);
 			}
@@ -538,18 +535,6 @@ int nextbuffer(void)
 	uint8_t roll = CC_buffer_position % 16;
 	uint8_t nextbuffer = (sarr_RND[num_arr_RND][position] >> (roll * 4))
 		& (num_arr_RND - 1);
-
-	pr_debug("raw:%lld",
-			"position:%d",
-			"roll:%d",
-			"%s:%d",
-			"CC_buffer_position:%d\n",
-			sarr_RND[num_arr_RND][position],
-			position,
-			roll,
-			__func__,
-			nextbuffer,
-			CC_buffer_position);
 
 	while (mutex_lock_interruptible(&UpPos_mutex))
 		;
