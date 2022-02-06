@@ -1,11 +1,11 @@
 # Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+# Maintainer: Cyber Knight (cyberknight777) <cyberknight755@gmail.com>
 
-pkgbase=linux
-pkgver=5.19.1.arch2
+pkgbase=linux-dragonheart
+pkgver=6.0.0.dragonheart
 pkgrel=1
 pkgdesc='Linux'
 _srctag=v${pkgver%.*}-${pkgver##*.}
-url="https://github.com/archlinux/linux/commits/$_srctag"
 arch=(x86_64)
 license=(GPL2)
 makedepends=(
@@ -14,53 +14,43 @@ makedepends=(
   git
 )
 options=('!strip')
-_srcname=archlinux-linux
-source=(
-  "$_srcname::git+https://github.com/archlinux/linux?signed#tag=$_srctag"
-  config         # the main kernel config file
-)
-validpgpkeys=(
-  'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
-  '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
-  'A2FF3A36AAA56654109064AB19802F8B0D70FC30'  # Jan Alexander Steffens (heftig)
-  'C7E7849466FE2358343588377258734B41C31549'  # David Runge <dvzrv@archlinux.org>
-)
-sha256sums=('SKIP'
-            'e14a79f9d4f80190d8705e1f2477be51d6ddfa4e07267d941363f031954f2b7b')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
 prepare() {
-  cd $_srcname
-
-  echo "Setting version..."
-  scripts/setlocalversion --save-scmversion
-  echo "-$pkgrel" > localversion.10-pkgrel
-  echo "${pkgbase#linux}" > localversion.20-pkgname
-
-  local src
-  for src in "${source[@]}"; do
-    src="${src%%::*}"
-    src="${src##*/}"
-    [[ $src = *.patch ]] || continue
-    echo "Applying patch $src..."
-    patch -Np1 < "../$src"
-  done
+  cd ../
 
   echo "Setting config..."
-  cp ../config .config
-  make olddefconfig
-  diff -u ../config .config || :
+  make defconfig dragonheart_defconfig
+
+  vendor=$(lscpu | awk '/Vendor ID/{print $3}')
+  if [[ "$vendor" == "GenuineIntel" || "$vendor" == "AuthenticAMD" ]]; then
+      echo "CPU: $(lscpu | awk '/Model name/{ print substr($0, index($0,$3)) }')"
+      echo "Applying optimizations..."
+      scripts/config --disable CONFIG_GENERIC_CPU
+      scripts/config --set-val CONFIG_NR_CPUS $(nproc --all)
+
+    if [[ "$vendor" == "GenuineIntel" ]]; then
+      scripts/config --enable CONFIG_MNATIVE_INTEL
+    elif [[ "$vendor" == "AuthenticAMD" ]]; then
+      scripts/config --enable CONFIG_X86_AMD_PSTATE
+      scripts/config --enable CONFIG_MNATIVE_AMD
+    fi
+  fi
 
   make -s kernelrelease > version
   echo "Prepared $pkgbase version $(<version)"
 }
 
 build() {
-  cd $_srcname
-  make htmldocs all
+  cd ../
+  if ! command -v ccache &> /dev/null; then
+    make all -j$(nproc --all)
+  else
+    PATH="/usr/lib/ccache/bin:${PATH}" make all -j$(nproc --all)
+  fi
 }
 
 _package() {
@@ -71,7 +61,7 @@ _package() {
   provides=(VIRTUALBOX-GUEST-MODULES WIREGUARD-MODULE KSMBD-MODULE)
   replaces=(virtualbox-guest-modules-arch wireguard-arch)
 
-  cd $_srcname
+  cd ../
   local kernver="$(<version)"
   local modulesdir="$pkgdir/usr/lib/modules/$kernver"
 
@@ -95,12 +85,12 @@ _package-headers() {
   pkgdesc="Headers and scripts for building modules for the $pkgdesc kernel"
   depends=(pahole)
 
-  cd $_srcname
+  cd ../
   local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
 
   echo "Installing build files..."
   install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map \
-    localversion.* version vmlinux
+    version vmlinux
   install -Dt "$builddir/kernel" -m644 kernel/Makefile
   install -Dt "$builddir/arch/x86" -m644 arch/x86/Makefile
   cp -t "$builddir" -a scripts
@@ -176,7 +166,7 @@ _package-headers() {
 _package-docs() {
   pkgdesc="Documentation for the $pkgdesc kernel"
 
-  cd $_srcname
+  cd ../
   local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
 
   echo "Installing documentation..."
@@ -192,7 +182,7 @@ _package-docs() {
   ln -sr "$builddir/Documentation" "$pkgdir/usr/share/doc/$pkgbase"
 }
 
-pkgname=("$pkgbase" "$pkgbase-headers" "$pkgbase-docs")
+pkgname=("$pkgbase" "$pkgbase-headers")
 for _p in "${pkgname[@]}"; do
   eval "package_$_p() {
     $(declare -f "_package${_p#$pkgbase}")
