@@ -23,7 +23,7 @@ prepare() {
   cd ../
 
   echo "Setting config..."
-  make defconfig dragonheart_defconfig
+  make dragonheart_defconfig
 
   vendor=$(lscpu | awk '/Vendor ID/{print $3}')
   if [[ "$vendor" == "GenuineIntel" || "$vendor" == "AuthenticAMD" ]]; then
