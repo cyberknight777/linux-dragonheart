@@ -168,3 +168,9 @@ sphinx_*/
 
 # Rust analyzer configuration
 /rust-project.json
+
+# AUR
+localversion.10-pkgrel
+localversion.20-pkgname
+pkg/
+version
