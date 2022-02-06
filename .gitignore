@@ -161,3 +161,9 @@ x509.genkey
 
 # Documentation toolchain
 sphinx_*/
+
+# AUR
+localversion.10-pkgrel
+localversion.20-pkgname
+pkg/
+version
