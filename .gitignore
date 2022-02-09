@@ -50,6 +50,7 @@
 Module.symvers
 modules.order
 regen.sh
+pick.sh
 
 #
 # Top-level generic files
