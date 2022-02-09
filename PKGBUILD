@@ -45,11 +45,13 @@ prepare() {
 }
 
 build() {
+
   cd ../
+
   if ! command -v ccache &> /dev/null; then
-    make all -j$(nproc --all)
+    make all -j$(nproc --all) LD=$(pwd)/ld.lld HOSTLD=$(pwd)/ld.lld
   else
-    PATH="/usr/lib/ccache/bin:${PATH}" make all -j$(nproc --all)
+    PATH="/usr/lib/ccache/bin:${PATH}" make all -j$(nproc --all) LD=$(pwd)/ld.lld HOSTLD=$(pwd)/ld.lld
   fi
 }
 
