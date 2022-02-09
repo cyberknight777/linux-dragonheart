@@ -49,6 +49,7 @@
 *.zst
 Module.symvers
 modules.order
+regen.sh
 
 #
 # Top-level generic files
