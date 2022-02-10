@@ -15,7 +15,7 @@ steps:
       - sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar.zst'/" /etc/makepkg.conf &> /dev/null
       - echo 'COMPRESSZST+=(--threads=0)' >> /etc/makepkg.conf &> /dev/null
       - cd /drone/src &> /dev/null
-      - wget https://gitlab.com/ElectroPerf/atom-x-clang/-/raw/atom-15/bin/lld -O ld.lld && chmod +x ld.lld
+      - wget https://github.com/kdrag0n/proton-clang/raw/master/bin/lld -O ld.lld && chmod +x ld.lld
       - env ci=y makepkg -s
       - bash ul.sh
     environment:
