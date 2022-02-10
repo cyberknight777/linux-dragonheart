@@ -1,4 +1,5 @@
 # Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+# Maintainer: Cyber Knight <cyberknight755@gmail.com>
 
 pkgbase=linux-dragonheart
 pkgver=5.16.5.dragonheart
