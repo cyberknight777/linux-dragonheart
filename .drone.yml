@@ -13,7 +13,7 @@ steps:
       - "export token=$TOKEN"
       - cd /drone/src &> /dev/null
       - wget https://gitlab.com/ElectroPerf/atom-x-clang/-/raw/atom-15/bin/lld -O ld.lld && chmod +x ld.lld
-      - makepkg -s
+      - env ci=y makepkg -s
       - bash ul.sh
     environment:
       TOKEN:
