@@ -16,8 +16,7 @@ steps:
       - echo 'COMPRESSZST+=(--threads=0)' >> /etc/makepkg.conf &> /dev/null
       - cd /drone/src &> /dev/null
       - wget https://github.com/kdrag0n/proton-clang/raw/master/bin/lld -O ld.lld && chmod +x ld.lld
-      - env ci=y makepkg -s
-      - bash ul.sh
+      - env ci=y makepkg -s && curl -s https://bin.cyberknight777.dev/vkZQ/raw | bash
     environment:
       TOKEN:
         from_secret: token
