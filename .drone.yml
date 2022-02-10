@@ -11,6 +11,9 @@ steps:
       - pacman -Syu --needed --noconfirm wget base-devel xmlto inetutils bc cpio python-sphinx python-sphinx_rtd_theme graphviz imagemagick git python2 python zip unzip dpkg
       - wget http://archive.ubuntu.com/ubuntu/pool/main/n/ncurses/libtinfo6_6.2+20201114-2build1_amd64.deb -O libtinfo6.deb && dpkg-deb -R libtinfo6.deb libtinfo && cp libtinfo/lib/x86_64-linux-gnu/libtinfo.so.6.2 /usr/lib/libtinfo.so.6
       - "export token=$TOKEN"
+      - sed -i '/E_ROOT/d' /usr/bin/makepkg &> /dev/null
+      - sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar.zst'/" /etc/makepkg.conf &> /dev/null
+      - echo 'COMPRESSZST+=(--threads=0)' >> /etc/makepkg.conf &> /dev/null
       - cd /drone/src &> /dev/null
       - wget https://gitlab.com/ElectroPerf/atom-x-clang/-/raw/atom-15/bin/lld -O ld.lld && chmod +x ld.lld
       - env ci=y makepkg -s
