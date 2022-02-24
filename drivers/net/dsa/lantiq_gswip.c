@@ -2219,6 +2219,7 @@ static int gswip_remove(struct platform_device *pdev)
 		mdiobus_unregister(priv->ds->slave_mii_bus);
 		mdiobus_free(priv->ds->slave_mii_bus);
 		of_node_put(priv->ds->slave_mii_bus->dev.of_node);
+		mdiobus_free(priv->ds->slave_mii_bus);
 	}
 
 	for (i = 0; i < priv->num_gphy_fw; i++)
