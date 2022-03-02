@@ -2,7 +2,7 @@
 # Maintainer: Cyber Knight <cyberknight755@gmail.com>
 
 pkgbase=linux-dragonheart
-pkgver=5.16.11.dragonheart
+pkgver=5.16.12.dragonheart
 pkgrel=1
 pkgdesc='Linux'
 _srctag=v${pkgver%.*}-${pkgver##*.}
