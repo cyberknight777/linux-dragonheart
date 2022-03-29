@@ -1033,7 +1033,7 @@ static int __init acpi_cpufreq_init(void)
 	return ret;
 }
 
-static void __exit acpi_cpufreq_exit(void)
+void __exit acpi_cpufreq_exit(void)
 {
 	pr_debug("%s\n", __func__);
 
@@ -1043,6 +1043,7 @@ static void __exit acpi_cpufreq_exit(void)
 
 	free_acpi_perf_data();
 }
+EXPORT_SYMBOL_GPL(acpi_cpufreq_exit);
 
 module_param(acpi_pstate_strict, uint, 0644);
 MODULE_PARM_DESC(acpi_pstate_strict,
