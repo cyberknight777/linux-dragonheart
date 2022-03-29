@@ -650,6 +650,17 @@ static void __exit amd_pstate_exit(void)
 	amd_pstate_enable(false);
 }
 
+/*
+ * This will only match the HW feature, there still needs to be appropriate
+ * SBIOS support, so it's possible that in such cases this causes a module
+ * load with -ENODEV as the result.
+ */
+static const struct x86_cpu_id __maybe_unused amd_pstate_ids[] = {
+	X86_MATCH_VENDOR_FEATURE(AMD, X86_FEATURE_CPPC, NULL),
+	{}
+};
+MODULE_DEVICE_TABLE(x86cpu, amd_pstate_ids);
+
 module_init(amd_pstate_init);
 module_exit(amd_pstate_exit);
 
