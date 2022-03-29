@@ -63,6 +63,12 @@ module_param(shared_mem, bool, 0444);
 MODULE_PARM_DESC(shared_mem,
 		 "enable amd-pstate on processors with shared memory solution (false = disabled (default), true = enabled)");
 
+static bool replace = false;
+module_param(replace, bool, 0444);
+MODULE_PARM_DESC(replace,
+		  "replace acpi-cpufreq driver upon init if necessary");
+extern void acpi_cpufreq_exit(void);
+
 static struct cpufreq_driver amd_pstate_driver;
 
 /**
@@ -588,6 +594,7 @@ static struct cpufreq_driver amd_pstate_driver = {
 
 static int __init amd_pstate_init(void)
 {
+	const char *current_driver;
 	int ret;
 
 	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD)
@@ -598,9 +605,15 @@ static int __init amd_pstate_init(void)
 		return -ENODEV;
 	}
 
-	/* don't keep reloading if cpufreq_driver exists */
-	if (cpufreq_get_current_driver())
-		return -EEXIST;
+	current_driver = cpufreq_get_current_driver();
+	if (current_driver) {
+		if (replace && strcmp(current_driver, "acpi-cpufreq") == 0) {
+			acpi_cpufreq_exit();
+		} else {
+			pr_info("This processor supports amd-pstate, you can enable it with amd_pstate.replace=1\n");
+			return -EEXIST;
+		}
+	}
 
 	/* capability check */
 	if (boot_cpu_has(X86_FEATURE_CPPC)) {
