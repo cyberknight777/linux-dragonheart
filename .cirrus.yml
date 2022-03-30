@@ -1,5 +1,6 @@
 kernel_task:
   name: DragonHeart build
+  trigger_type: manual
   timeout_in: 120m
   container:
     image: panchajanya1999/archlinux:latest
