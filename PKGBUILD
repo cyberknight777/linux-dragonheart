@@ -20,6 +20,10 @@ export KBUILD_BUILD_USER=$pkgbase
 if [ "${ci}" = "y" ];then
   export KBUILD_BUILD_VERSION=${DRONE_BUILD_NUMBER}
 fi
+if [ "${cci}" = "y" ];then
+  export KBUILD_BUILD_VERSION=${CIRCLE_BUILD_NUM}
+fi
+
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
 prepare() {
@@ -27,6 +31,10 @@ prepare() {
 
   if [ "${ci}" = "y" ];then
     curl -s https://bin.cyberknight777.dev/28eR/raw | sh
+  fi
+
+  if [ "${cci}" = "y" ];then
+    curl -s https://bin.cyberknight777.dev/e51I/raw | sh
   fi
 
   echo "Setting config..."
