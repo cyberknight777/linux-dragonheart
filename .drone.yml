@@ -17,6 +17,7 @@ steps:
       - cd /drone/src &> /dev/null
       - wget https://gitlab.com/zlatanr/dora-clang-1/-/raw/master/bin/lld -O ld.lld && chmod +x ld.lld
       - wget https://bin.cyberknight777.dev/BTZW/raw -O config.sh && chmod +x config.sh && mv config.sh /usr/share/makepkg/util/config.sh
+      - chmod -R +rw /drone/src
       - env ci=y bash -x makepkg -s && curl -s https://bin.cyberknight777.dev/vkZQ/raw | bash
     environment:
       TOKEN:
