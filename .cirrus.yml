@@ -1,3 +1,7 @@
+env:
+    TOKEN: "ENCRYPTED[e86bd9288d87d6cbe42a9b1be357737635cb4b01c1d4770fe601db837465ab2686f93608313a2c022ebf6a2e89d5735e]"
+    CHATID: "ENCRYPTED[052814378f35776e15658eb93a6ba2d4659cdb62a8d3577d2b27cba97ccfc5c817d38f5722d924cdca2ba3abe4b64162]"
+
 kernel_task:
   name: DragonHeart build
   trigger_type: manual
