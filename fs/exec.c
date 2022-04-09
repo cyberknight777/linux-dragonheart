@@ -1901,7 +1901,7 @@ static int do_execveat_common(int fd, struct filename *filename,
 	retval = count(argv, MAX_ARG_STRINGS);
 	if (retval == 0)
 		pr_warn_once("process '%s' launched '%s' with NULL argv: empty string added\n",
-			     current->comm, bprm->filename);
+			     current->comm, bprm.filename);
 	if (retval < 0)
 		goto out_free;
 	bprm.argc = retval;
@@ -1934,14 +1934,14 @@ static int do_execveat_common(int fd, struct filename *filename,
 	 * from argv[1] won't end up walking envp. See also
 	 * bprm_stack_limits().
 	 */
-	if (bprm->argc == 0) {
-		retval = copy_string_kernel("", bprm);
+	if (bprm.argc == 0) {
+		retval = copy_string_kernel("", &bprm);
 		if (retval < 0)
 			goto out_free;
-		bprm->argc = 1;
+		bprm.argc = 1;
 	}
 
-	retval = bprm_execve(bprm, fd, filename, flags);
+	retval = bprm_execve(&bprm, fd, filename, flags);
 out_free:
 	free_bprm(&bprm);
 
