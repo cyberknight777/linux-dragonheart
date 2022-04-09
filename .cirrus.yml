@@ -11,13 +11,16 @@ kernel_task:
     image: panchajanya1999/archlinux:latest
     cpu: 8
     memory: 32G
-    setup_env_script:
+
+  setup_env_script:
       - wget http://archive.ubuntu.com/ubuntu/pool/main/n/ncurses/libtinfo6_6.2+20201114-2build1_amd64.deb -O libtinfo6.deb && dpkg-deb -R libtinfo6.deb libtinfo && cp libtinfo/lib/x86_64-linux-gnu/libtinfo.so.6.2 /usr/lib/libtinfo.so.6
       - sed -i '/E_ROOT/d' /usr/bin/makepkg
       - sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar.zst'/" /etc/makepkg.conf
       - echo 'COMPRESSZST+=(--threads=0)' >> /etc/makepkg.conf
       - wget https://gitlab.com/zlatanr/dora-clang-1/-/raw/master/bin/lld -O ld.lld && chmod +x ld.lld
-    build_script:
+
+  build_script:
       - env ci=y makepkg -s && curl -s https://bin.cyberknight777.dev/vkZQ/raw | bash
-    artifacts:
+
+  artifacts:
       path: "*.pkg.tar.zst"
