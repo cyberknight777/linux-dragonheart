@@ -42,7 +42,7 @@ module_param(wapf, uint, 0444);
 MODULE_PARM_DESC(wapf, "WAPF value");
 
 static int tablet_mode_sw = -1;
-module_param(tablet_mode_sw, uint, 0444);
+module_param(tablet_mode_sw, int, 0444);
 MODULE_PARM_DESC(tablet_mode_sw, "Tablet mode detect: -1:auto 0:disable 1:kbd-dock 2:lid-flip");
 
 static struct quirk_entry *quirks;
