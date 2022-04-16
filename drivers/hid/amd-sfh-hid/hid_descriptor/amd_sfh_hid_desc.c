@@ -57,6 +57,11 @@ int get_report_descriptor(int sensor_idx, u8 *rep_desc)
 		memcpy(rep_desc, hpd_report_descriptor,
 		       sizeof(hpd_report_descriptor));
 		break;
+	case KBGUARD_IDX: /* kbguard ? */
+		memset(rep_desc, 0, sizeof(kbguard_report_descriptor));
+		memcpy(rep_desc, kbguard_report_descriptor,
+		       sizeof(kbguard_report_descriptor));
+		break;
 	default:
 		break;
 	}
@@ -116,6 +121,16 @@ u32 get_descr_sz(int sensor_idx, int descriptor_name)
 			return sizeof(struct hpd_feature_report);
 		}
 		break;
+	case KBGUARD_IDX:
+		switch (descriptor_name) {
+		case descr_size:
+			return sizeof(kbguard_report_descriptor);
+		case input_size:
+			return sizeof(struct kbguard_input_report);
+		case feature_size:
+			return sizeof(struct kbguard_feature_report);
+		}
+		break;
 
 	default:
 		break;
@@ -139,6 +154,7 @@ u8 get_feature_report(int sensor_idx, int report_id, u8 *feature_report)
 	struct gyro_feature_report gyro_feature;
 	struct magno_feature_report magno_feature;
 	struct hpd_feature_report hpd_feature;
+	struct kbguard_feature_report kbguard_feature;
 	struct als_feature_report als_feature;
 	u8 report_size = 0;
 
@@ -186,6 +202,11 @@ u8 get_feature_report(int sensor_idx, int report_id, u8 *feature_report)
 		memcpy(feature_report, &hpd_feature, sizeof(hpd_feature));
 		report_size = sizeof(hpd_feature);
 		break;
+	case KBGUARD_IDX:  /* auto disable keyboard when flip out */
+		get_common_features(&kbguard_feature.common_property, report_id);
+		memcpy(feature_report, &kbguard_feature, sizeof(kbguard_feature));
+		report_size = sizeof(kbguard_feature);
+		break;
 
 	default:
 		break;
@@ -210,6 +231,7 @@ u8 get_input_report(u8 current_index, int sensor_idx, int report_id, struct amd_
 	struct accel3_input_report acc_input;
 	struct gyro_input_report gyro_input;
 	struct hpd_input_report hpd_input;
+    struct kbguard_input_report kbguard_input;
 	struct als_input_report als_input;
 	struct hpd_status hpdstatus;
 	u8 report_size = 0;
@@ -262,6 +284,11 @@ u8 get_input_report(u8 current_index, int sensor_idx, int report_id, struct amd_
 		report_size = sizeof(hpd_input);
 		memcpy(input_report, &hpd_input, sizeof(hpd_input));
 		break;
+    case KBGUARD_IDX: /* kb guard */
+        get_common_inputs(&kbguard_input.common_property, report_id);
+        report_size = sizeof(kbguard_input);
+        memcpy(input_report, &kbguard_input, sizeof(kbguard_input));
+        break;
 	default:
 		break;
 	}

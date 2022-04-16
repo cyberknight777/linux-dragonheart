@@ -26,6 +26,7 @@
 #define ACEL_EN		BIT(0)
 #define GYRO_EN		BIT(1)
 #define MAGNO_EN	BIT(2)
+#define KBGUARD_EN	BIT(15)
 #define HPD_EN		BIT(16)
 #define ALS_EN		BIT(19)
 
@@ -226,6 +227,9 @@ int amd_mp2_get_sensor_num(struct amd_mp2_dev *privdata, u8 *sensor_id)
 	if (HPD_EN & activestatus)
 		sensor_id[num_of_sensors++] = HPD_IDX;
 
+	if (KBGUARD_EN & activestatus)
+		sensor_id[num_of_sensors++] = KBGUARD_IDX;
+
 	return num_of_sensors;
 }
 
@@ -368,6 +372,7 @@ static int __maybe_unused amd_mp2_pci_suspend(struct device *dev)
 
 	for (i = 0; i < cl_data->num_hid_devices; i++) {
 		if (cl_data->sensor_idx[i] != HPD_IDX &&
+            cl_data->sensor_idx[i] != KBGUARD_IDX &&
 		    cl_data->sensor_sts[i] == SENSOR_ENABLED) {
 			mp2->mp2_ops->stop(mp2, cl_data->sensor_idx[i]);
 			status = amd_sfh_wait_for_response

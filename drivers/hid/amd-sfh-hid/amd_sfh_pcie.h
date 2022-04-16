@@ -36,6 +36,7 @@
 #define SENSOR_DISABLED    5
 
 #define HPD_IDX		16
+#define KBGUARD_IDX	15
 
 #define AMD_SFH_IDLE_LOOP	200
 

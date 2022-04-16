@@ -56,6 +56,8 @@ module_param(fnlock_default, bool, 0444);
 
 #define ASUS_WMI_MGMT_GUID	"97845ED0-4E6D-11DE-8A39-0800200C9A66"
 
+#define ASUS_ROG_FLOW_WMI_DEVID_LID_FLIP 0x00060077 
+
 #define NOTIFY_BRNUP_MIN		0x11
 #define NOTIFY_BRNUP_MAX		0x1f
 #define NOTIFY_BRNDOWN_MIN		0x20
@@ -68,6 +70,7 @@ module_param(fnlock_default, bool, 0444);
 #define NOTIFY_KBD_FBM			0x99
 #define NOTIFY_KBD_TTP			0xae
 #define NOTIFY_LID_FLIP			0xfa
+#define NOTIFY_LID_FLIP_ROG		0xbd
 
 #define ASUS_WMI_FNLOCK_BIOS_DISABLED	BIT(0)
 
@@ -512,6 +515,12 @@ static int asus_wmi_input_init(struct asus_wmi *asus)
 
 	if (asus->driver->quirks->use_lid_flip_devid) {
 		result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
+		if (result < 0) {
+			result = asus_wmi_get_devstate_simple(asus, ASUS_ROG_FLOW_WMI_DEVID_LID_FLIP);
+		}
+		if (result == -ENODEV && asus->driver->quirks->enodev_as_tablet_mode) {
+			result = 1;
+		}
 		if (result < 0)
 			asus->driver->quirks->use_lid_flip_devid = 0;
 		if (result >= 0) {
@@ -548,6 +557,13 @@ static void asus_wmi_input_exit(struct asus_wmi *asus)
 static void lid_flip_tablet_mode_get_state(struct asus_wmi *asus)
 {
 	int result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_LID_FLIP);
+
+	if (result < 0) {
+		result = asus_wmi_get_devstate_simple(asus, ASUS_ROG_FLOW_WMI_DEVID_LID_FLIP);
+	}
+	if(result == -ENODEV && asus->driver->quirks->enodev_as_tablet_mode) {
+		result = 1;
+	}
 
 	if (result >= 0) {
 		input_report_switch(asus->inputdev, SW_TABLET_MODE, result);
@@ -3089,7 +3105,7 @@ static void asus_wmi_handle_event_code(int code, struct asus_wmi *asus)
 		return;
 	}
 
-	if (asus->driver->quirks->use_lid_flip_devid && code == NOTIFY_LID_FLIP) {
+	if (asus->driver->quirks->use_lid_flip_devid && (code == NOTIFY_LID_FLIP || code == NOTIFY_LID_FLIP_ROG)) {
 		lid_flip_tablet_mode_get_state(asus);
 		return;
 	}
