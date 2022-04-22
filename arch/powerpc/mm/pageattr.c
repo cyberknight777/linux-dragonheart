@@ -52,12 +52,6 @@ static int change_page_attr(pte_t *ptep, unsigned long addr, void *data)
 	case SET_MEMORY_P:
 		pte_update(&init_mm, addr, ptep, 0, _PAGE_PRESENT, 0);
 		break;
-	case SET_MEMORY_NP:
-		pte_update(&init_mm, addr, ptep, _PAGE_PRESENT, 0, 0);
-		break;
-	case SET_MEMORY_P:
-		pte_update(&init_mm, addr, ptep, 0, _PAGE_PRESENT, 0);
-		break;
 	default:
 		WARN_ON_ONCE(1);
 		break;
