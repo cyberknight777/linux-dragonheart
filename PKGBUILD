@@ -19,8 +19,24 @@ export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 if [ "${ci}" = "y" ];then
   export KBUILD_BUILD_VERSION=1
+  export TC="$(pwd)/neutron-clang/bin"
 fi
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
+
+FLAGS=(
+    LLVM=1
+    CC="$TC"/clang
+    LD="$TC"/ld.lld
+    NM="$TC"/llvm-nm
+    STRIP="$TC"/llvm-strip
+    OBJCOPY="$TC"/llvm-objcopy
+    OBJDUMP="$TC"/llvm-objdump
+    OBJSIZE="$TC"/llvm-size
+    HOSTCC="$TC"/clang
+    HOSTCXX="$TC"/clang++
+    HOSTAR="$TC"/llvm-ar
+    HOSTLD="$TC"/ld.lld
+)
 
 prepare() {
   cd ../
@@ -30,7 +46,8 @@ prepare() {
   fi
 
   echo "Setting config..."
-  make dragonheart_defconfig
+
+  make ${FLAGS[@]} dragonheart_defconfig
 
   vendor=$(lscpu | awk '/Vendor ID/{print $3}')
   if [[ "$vendor" == "GenuineIntel" || "$vendor" == "AuthenticAMD" ]]; then
@@ -56,9 +73,9 @@ build() {
   cd ../
 
   if ! command -v ccache &> /dev/null; then
-    make all -j$(nproc --all) LD=$(pwd)/ld.lld HOSTLD=$(pwd)/ld.lld
+    make all -j$(nproc --all) ${FLAGS[@]}
   else
-    PATH="/usr/lib/ccache/bin:${PATH}" make all -j$(nproc --all) LD=$(pwd)/ld.lld HOSTLD=$(pwd)/ld.lld
+    PATH="/usr/lib/ccache/bin:${PATH}" make all -j$(nproc --all) ${FLAGS[@]}
   fi
 }
 
