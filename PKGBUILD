@@ -20,6 +20,7 @@ export KBUILD_BUILD_USER=$pkgbase
 if [ "${ci}" = "y" ];then
   export KBUILD_BUILD_VERSION=1
   export TC="$(pwd)/neutron-clang/bin"
+  export PATH="$TC:${PATH}"
 fi
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
