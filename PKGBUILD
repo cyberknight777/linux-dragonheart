@@ -27,6 +27,7 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
 FLAGS=(
     LLVM=1
     CC="$TC"/clang
+    AR="$TC"/llvm-ar
     LD="$TC"/ld.lld
     NM="$TC"/llvm-nm
     STRIP="$TC"/llvm-strip
