@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/x86 5.18.11 Kernel Configuration
+# Linux/x86 5.18.12 Kernel Configuration
 #
 CONFIG_CC_VERSION_TEXT="Neutron clang version 15.0.0 (https://github.com/llvm/llvm-project.git bac4934c84f3ec82e771753f90f6a0e340808ba2)"
 CONFIG_GCC_VERSION=0
