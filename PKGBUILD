@@ -27,6 +27,7 @@ export PATH="$TC:${PATH}"
 
 FLAGS=(
     LLVM=1
+    LLVM_IAS=1
     CC="$TC"/clang
     AR="$TC"/llvm-ar
     LD="$TC"/ld.lld
