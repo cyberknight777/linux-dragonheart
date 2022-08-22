@@ -3,7 +3,7 @@
 
 pkgbase=linux-dragonheart
 pkgver=6.0.0.dragonheart
-pkgrel=1
+pkgrel=2
 pkgdesc='Linux'
 _srctag=v${pkgver%.*}-${pkgver##*.}
 arch=(x86_64)
