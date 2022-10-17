@@ -16,6 +16,8 @@ else
 	LINUX_COMPILE_HOST=$KBUILD_BUILD_HOST
 fi
 
+CC_VERSION=$($CC -v 2>&1 | grep ' version ' | head -n 1 |
+		perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 LD_VERSION=$(LC_ALL=C $LD -v | head -n1 |
 		sed -e 's/(compatible with [^)]*)//' -e 's/[[:space:]]*$//')
 
